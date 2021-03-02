@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterTableApplicationsMakeSectorNullable extends Migration
+class AlterTableJobsAddPeriodColumn extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AlterTableApplicationsMakeSectorNullable extends Migration
      */
     public function up()
     {
-        Schema::table('applications', function (Blueprint $table) {
-            $table->string('sector')->nullable()->change();
+        //
+        Schema::table('jobs', function (Blueprint $table) {
+            $table->integer('period')->after('amount')->default(48);
         });
     }
 
