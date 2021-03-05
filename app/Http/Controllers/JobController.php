@@ -60,7 +60,6 @@ class JobController extends Controller
                 $idx++;
             }
             if($exist_company){
-                $job->company = '';
                 $job->period = '';
                 $data = '';
                 array_splice($temp_jobs, $idx, 0, $data);
