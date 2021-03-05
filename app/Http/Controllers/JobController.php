@@ -211,7 +211,7 @@ class JobController extends Controller
         }
 
         if($job->indemnity_file) {
-            $job->indemnity_file = implode(json_decode($job->indemnity_file), ', ');
+            $job->indemnity_file = implode(', ', json_decode($job->indemnity_file));
         }
 
         // dd($job->toArray());
