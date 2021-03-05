@@ -440,7 +440,7 @@ class ApplicationController extends Controller
                                  ->pluck('id')
                                  ->toArray();
 
-                                 Log::debug($available_company_ids);
+
 
         foreach ($available_company_ids as $key => $id) {
             $selected_job = Job::find($id)->toArray();
@@ -455,6 +455,13 @@ class ApplicationController extends Controller
             $filtered_available_dates[] = array_filter($available_dates, function ($date) use ($selected_job) {
                 $this_application_date_count = Application::where('dates', $date)->where('job_id', $selected_job['id'])->whereNotIn('user_id', [Auth::user()->id])->count();
                 if ($this_application_date_count >= $selected_job['max_applicants'] || $date == '') {
+                    return false;
+                }
+                // filter out any dates that are sooner than the maximum limit set for the company
+                $format_arrival_time = str_replace(['h', 'H'], ':', $selected_job['arrival_time']);
+                $start_date_time = Carbon::createFromFormat('m/d/Y H:i', $date . ' ' . $format_arrival_time, 'Africa/Johannesburg');
+                $now = Carbon::now('Africa/Johannesburg');
+                if($now->diffInHours($start_date_time) < $selected_job['period']) {
                     return false;
                 }
 
