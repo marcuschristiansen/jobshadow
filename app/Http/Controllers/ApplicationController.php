@@ -182,7 +182,6 @@ class ApplicationController extends Controller
             ->get();
         }
 
-        $filteredCareers = collect([]);
         foreach($careers as $career) {
             $career->availableDates = false;
 
@@ -214,14 +213,10 @@ class ApplicationController extends Controller
                     }
                 }
             }
-
-            if($career->availableDates) {
-                $filteredCareers->push($career);
-            }
         }
 
         return view('application.createStep2', [
-            'careers'       => $filteredCareers->sortBy('name'),
+            'careers'       => $careers->sortBy('name'),
             'application'   => $application,
             'careerApplications' => $careerApplications
         ]);
