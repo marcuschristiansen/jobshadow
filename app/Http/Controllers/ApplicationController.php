@@ -182,6 +182,7 @@ class ApplicationController extends Controller
             ->get();
         }
 
+        $filteredCareers = collect([]);
         foreach($careers as $career) {
             $career->availableDates = false;
 
@@ -196,19 +197,31 @@ class ApplicationController extends Controller
                     if(!$availability) {
                         continue;
                     }
+
+                    // filter out any dates that are sooner than the maximum limit set for the company
+                    $format_arrival_time = str_replace(['h', 'H'], ':', $jobs['arrival_time']);
+
                     $datesArray = explode(",", $availability);
-                    $filtered = Arr::where($datesArray, function ($value, $key) {
-                        return strtotime($value) > time();
+                    $filtered = Arr::where($datesArray, function ($value, $key) use ($format_arrival_time, $jobs) {
+                        $now = Carbon::now('Africa/Johannesburg');
+                        $start_date_time = Carbon::createFromFormat('m/d/Y H:i', $value . ' ' . $format_arrival_time, 'Africa/Johannesburg');
+                        // must be in the future and further than the booking time limit
+                        return strtotime($value) > time() && $now->diffInHours($start_date_time) > $jobs['period'];
                     });
+
                     if(!empty($filtered)) {
                         $career->availableDates = true;
                     }
                 }
             }
+
+            if($career->availableDates) {
+                $filteredCareers->push($career);
+            }
         }
 
         return view('application.createStep2', [
-            'careers'       => $careers->sortBy('name'),
+            'careers'       => $filteredCareers->sortBy('name'),
             'application'   => $application,
             'careerApplications' => $careerApplications
         ]);
