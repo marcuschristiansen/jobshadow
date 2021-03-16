@@ -203,7 +203,7 @@ class ApplicationController extends Controller
                     $datesArray = explode(",", $availability);
                     $filtered = Arr::where($datesArray, function ($value, $key) use ($format_arrival_time, $jobs) {
                         $now = Carbon::now('Africa/Johannesburg');
-                        $start_date_time = Carbon::createFromFormat('m/d/Y H:i', $value . ' ' . $format_arrival_time, 'Africa/Johannesburg');
+                        $start_date_time = Carbon::createFromFormat('m/d/Y H:i', trim($value) . ' ' . $format_arrival_time, 'Africa/Johannesburg');
                         // must be in the future and further than the booking time limit
                         return strtotime($value) > time() && $now->diffInHours($start_date_time) > $jobs['period'];
                     });
