@@ -453,7 +453,7 @@ class ApplicationController extends Controller
                 }
                 // filter out any dates that are sooner than the maximum limit set for the company
                 $format_arrival_time = str_replace(['h', 'H'], ':', $selected_job['arrival_time']);
-                $start_date_time = Carbon::createFromFormat('m/d/Y H:i', $date . ' ' . $format_arrival_time, 'Africa/Johannesburg');
+                $start_date_time = Carbon::createFromFormat('m/d/Y H:i', trim($date) . ' ' . $format_arrival_time, 'Africa/Johannesburg');
                 $now = Carbon::now('Africa/Johannesburg');
                 if($now->diffInHours($start_date_time) < $selected_job['period']) {
                     return false;
